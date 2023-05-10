@@ -1,0 +1,189 @@
+<Window
+    x:Class="TestApp_AvaloniaUI.Views.MainWindow"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:TestApp_AvaloniaUI.ViewModels"
+    Title="TestApp_AvaloniaUI"
+    Width="450"
+    Height="600"
+    MinHeight="600"
+    MaxWidth="450"
+    x:DataType="vm:MainWindowViewModel"
+    Icon="/Assets/avalonia-logo.ico"
+    mc:Ignorable="d">
+
+    <Design.DataContext>
+        <!--
+            This only sets the DataContext for the previewer in an IDE,
+            to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs)
+        -->
+        <vm:MainWindowViewModel />
+    </Design.DataContext>
+
+    <Window.Styles>
+        <Style Selector="Button.button">
+            <Setter Property="FontSize" Value="28" />
+            <Setter Property="FontWeight" Value="ExtraBold" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="CornerRadius" Value="9" />
+            <Setter Property="Margin" Value="3" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <DoubleTransition Property="FontSize" Duration="0:0:0.2" />
+                </Transitions>
+            </Setter>
+        </Style>
+
+        <Style Selector="Button.button /template/ ContentPresenter">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="#000012" />
+            <Setter Property="BorderBrush" Value="#000012" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="0:0:0.4" />
+                    <BrushTransition Property="BorderBrush" Duration="0:0:0.2" />
+                </Transitions>
+            </Setter>
+        </Style>
+
+        <Style Selector="Button.button:pointerover">
+            <Setter Property="Button.FontSize" Value="32" />
+        </Style>
+
+        <Style Selector="Button.button:pointerover /template/ ContentPresenter">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="#000959" />
+            <Setter Property="BorderBrush" Value="#000989" />
+            <Setter Property="BorderThickness" Value="5" />
+        </Style>
+    </Window.Styles>
+
+    <Grid
+        Background="#000718"
+        ColumnDefinitions="20,*,20"
+        RowDefinitions="20,90,*,20">
+        <Border
+            Grid.Row="1"
+            Grid.Column="1"
+            Background="#000012"
+            CornerRadius="9" />
+        <Grid
+            Grid.Row="1"
+            Grid.Column="1"
+            ColumnDefinitions="Auto,Auto">
+            <TextBlock
+                x:Name="test"
+                Grid.Row="0"
+                Padding="20"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                FontSize="28"
+                FontWeight="DemiBold"
+                Foreground="White" />
+        </Grid>
+        <Grid
+            Grid.Row="2"
+            Grid.Column="1"
+            ColumnDefinitions="*,*,*,*"
+            RowDefinitions="20,*,*,*,*">
+            <Button
+                Name="button1"
+                Grid.Row="1"
+                Classes="button"
+                Content="1" />
+            <Button
+                Name="button2"
+                Grid.Row="1"
+                Grid.Column="1"
+                Classes="button"
+                Content="2" />
+            <Button
+                Name="button3"
+                Grid.Row="1"
+                Grid.Column="2"
+                Classes="button"
+                Content="3" />
+            <Button
+                Name="buttonPerc"
+                Grid.Row="1"
+                Grid.Column="3"
+                Classes="button"
+                Content="%" />
+            <Button
+                Name="button4"
+                Grid.Row="2"
+                Classes="button"
+                Content="4" />
+            <Button
+                Name="button5"
+                Grid.Row="2"
+                Grid.Column="1"
+                Classes="button"
+                Content="5" />
+            <Button
+                Name="button6"
+                Grid.Row="2"
+                Grid.Column="2"
+                Classes="button"
+                Content="6" />
+            <Button
+                Name="buttonX"
+                Grid.Row="2"
+                Grid.Column="3"
+                Classes="button"
+                Content="x" />
+            <Button
+                Name="button7"
+                Grid.Row="3"
+                Classes="button"
+                Content="7" />
+            <Button
+                Name="button8"
+                Grid.Row="3"
+                Grid.Column="1"
+                Classes="button"
+                Content="8" />
+            <Button
+                Name="button9"
+                Grid.Row="3"
+                Grid.Column="2"
+                Classes="button"
+                Content="9" />
+            <Button
+                Name="buttonMinus"
+                Grid.Row="3"
+                Grid.Column="3"
+                Classes="button"
+                Content="-" />
+            <Button
+                Name="buttonComma"
+                Grid.Row="4"
+                Classes="button"
+                Content="," />
+            <Button
+                Name="button0"
+                Grid.Row="4"
+                Grid.Column="1"
+                Classes="button"
+                Content="0" />
+            <Button
+                Name="buttonExa"
+                Grid.Row="4"
+                Grid.Column="2"
+                Classes="button"
+                Content="=" />
+            <Button
+                Name="buttonPlus"
+                Grid.Row="4"
+                Grid.Column="3"
+                Classes="button"
+                Content="+" />
+        </Grid>
+    </Grid>
+
+</Window>
