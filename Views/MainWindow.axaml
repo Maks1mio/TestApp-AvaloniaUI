@@ -9,7 +9,7 @@
     Width="450"
     Height="600"
     MinHeight="600"
-    MaxWidth="450"
+    MinWidth="450"
     x:DataType="vm:MainWindowViewModel"
     Icon="/Assets/avalonia-logo.ico"
     mc:Ignorable="d">
