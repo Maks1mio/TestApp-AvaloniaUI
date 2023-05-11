@@ -8,8 +8,8 @@
     Title="TestApp_AvaloniaUI"
     Width="450"
     Height="600"
-    MinHeight="600"
     MinWidth="450"
+    MinHeight="600"
     x:DataType="vm:MainWindowViewModel"
     Icon="/Assets/avalonia-logo.ico"
     mc:Ignorable="d">
@@ -41,8 +41,8 @@
 
         <Style Selector="Button.button /template/ ContentPresenter">
             <Setter Property="Foreground" Value="White" />
-            <Setter Property="Background" Value="#000012" />
-            <Setter Property="BorderBrush" Value="#000012" />
+            <Setter Property="Background" Value="#10ffffff" />
+            <Setter Property="BorderBrush" Value="#10ffffff" />
             <Setter Property="Transitions">
                 <Transitions>
                     <BrushTransition Property="Background" Duration="0:0:0.4" />
@@ -51,40 +51,112 @@
             </Setter>
         </Style>
 
-        <Style Selector="Button.button:pointerover">
-            <Setter Property="Button.FontSize" Value="32" />
+        <Style Selector="Button.button[IsEnabled=False] /template/ ContentPresenter">
+            <Setter Property="Foreground" Value="#50ffffff" />
+            <Setter Property="Background" Value="#10ffffff" />
+            <Setter Property="BorderBrush" Value="#75000012" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="0:0:0.4" />
+                    <BrushTransition Property="BorderBrush" Duration="0:0:0.2" />
+                </Transitions>
+            </Setter>
         </Style>
 
         <Style Selector="Button.button:pointerover /template/ ContentPresenter">
             <Setter Property="Foreground" Value="White" />
-            <Setter Property="Background" Value="#000959" />
-            <Setter Property="BorderBrush" Value="#000989" />
-            <Setter Property="BorderThickness" Value="5" />
+            <Setter Property="Background" Value="#20ffffff" />
+            <Setter Property="BorderBrush" Value="#20ffffff" />
+        </Style>
+
+        <!--    -->
+
+        <Style Selector="Button.take">
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="FontWeight" Value="ExtraBold" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="CornerRadius" Value="0, 9, 9, 0" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <DoubleTransition Property="FontSize" Duration="0:0:0.2" />
+                </Transitions>
+            </Setter>
+        </Style>
+
+        <Style Selector="Button.take /template/ ContentPresenter">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="#10ffffff" />
+            <Setter Property="BorderBrush" Value="#10ffffff" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="0:0:0.4" />
+                    <BrushTransition Property="BorderBrush" Duration="0:0:0.2" />
+                </Transitions>
+            </Setter>
+        </Style>
+
+        <Style Selector="Button.take[IsEnabled=False] /template/ ContentPresenter">
+            <Setter Property="Foreground" Value="#50ffffff" />
+            <Setter Property="Width" Value="0" />
+            <Setter Property="Background" Value="#00000012" />
+            <Setter Property="BorderBrush" Value="#05000012" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="0:0:0.4" />
+                    <BrushTransition Property="BorderBrush" Duration="0:0:0.2" />
+                </Transitions>
+            </Setter>
+        </Style>
+
+        <Style Selector="Button.take:pointerover /template/ ContentPresenter">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="#20ffffff" />
+            <Setter Property="BorderBrush" Value="#20ffffff" />
         </Style>
     </Window.Styles>
 
     <Grid
-        Background="#000718"
-        ColumnDefinitions="20,*,20"
-        RowDefinitions="20,90,*,20">
+        Background="#f9020918"
+        ColumnDefinitions="30,*,30"
+        RowDefinitions="30,100,*,30">
         <Border
             Grid.Row="1"
             Grid.Column="1"
-            Background="#000012"
+            Background="#10ffffff"
+            BorderBrush="#10ffffff"
+            BorderThickness="1"
             CornerRadius="9" />
         <Grid
             Grid.Row="1"
             Grid.Column="1"
-            ColumnDefinitions="Auto,Auto">
+            ColumnDefinitions="*,Auto,Auto">
             <TextBlock
-                x:Name="test"
-                Grid.Row="0"
+                x:Name="inputText"
+                Grid.Column="0"
                 Padding="20"
                 HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                FontSize="22"
+                FontWeight="DemiBold"
+                Foreground="White" />
+            <TextBlock
+                x:Name="resultText"
+                Grid.Column="1"
+                Padding="20"
+                HorizontalAlignment="Right"
                 VerticalAlignment="Center"
                 FontSize="28"
                 FontWeight="DemiBold"
                 Foreground="White" />
+            <Button
+                Name="buttonTransfer"
+                Grid.Column="2"
+                Classes="take"
+                Content="select"
+                IsEnabled="False" />
         </Grid>
         <Grid
             Grid.Row="2"
@@ -109,11 +181,11 @@
                 Classes="button"
                 Content="3" />
             <Button
-                Name="buttonPerc"
+                Name="buttonDivide"
                 Grid.Row="1"
                 Grid.Column="3"
                 Classes="button"
-                Content="%" />
+                Content="/" />
             <Button
                 Name="button4"
                 Grid.Row="2"
@@ -132,7 +204,7 @@
                 Classes="button"
                 Content="6" />
             <Button
-                Name="buttonX"
+                Name="buttonMultiply"
                 Grid.Row="2"
                 Grid.Column="3"
                 Classes="button"
@@ -155,7 +227,7 @@
                 Classes="button"
                 Content="9" />
             <Button
-                Name="buttonMinus"
+                Name="buttonSubtract"
                 Grid.Row="3"
                 Grid.Column="3"
                 Classes="button"
@@ -172,13 +244,13 @@
                 Classes="button"
                 Content="0" />
             <Button
-                Name="buttonExa"
+                Name="buttonEquals"
                 Grid.Row="4"
                 Grid.Column="2"
                 Classes="button"
                 Content="=" />
             <Button
-                Name="buttonPlus"
+                Name="buttonAdd"
                 Grid.Row="4"
                 Grid.Column="3"
                 Classes="button"
