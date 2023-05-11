@@ -1,93 +1,90 @@
 using Avalonia.Controls;
+using Avalonia.Input;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace TestApp_AvaloniaUI.Views
 {
+    enum Operation
+    {
+        None,
+
+        Multiplication,
+
+        Addition,
+
+        Subtraction
+    }
+
+    static class RangeExtensions
+    {
+        public static IEnumerator<int> GetEnumerator(this Range range)
+        {
+            for (var i = range.Start.Value; i < range.End.Value; i++)
+                yield return i;
+        }
+    }
+
     public partial class MainWindow : Window
     {
-        private double previousValue = 0;
-        private double currentValue = 0;
-        private string operation = "";
+        private double _previousValue;
+        private double _currentValue;
+        private Operation _operation;
 
         public MainWindow()
         {
             InitializeComponent();
 
-            button1.Click += (_, _) => {
-                AppendNumber(1);
+            var buttonNamePrefix = "button";
+            foreach (var buttonIndex in 0..9)
+            {
+                var button = this.Get<Button>($"{buttonNamePrefix}{buttonIndex}");
+                button.Click += (_, _) => AppendNumber(buttonIndex);
+            }
+
+            buttonPerc.Click += (_, _) =>
+            {
+                if (_operation == Operation.None)
+                    return;
+
+                _currentValue = double.Parse(test.Text);
+                _currentValue /= 100;
+                test.Text = _currentValue.ToString();
             };
 
-            button2.Click += (_, _) => {
-                AppendNumber(2);
+            buttonX.Click += (_, _) =>
+            {
+                SetOperation(Operation.Multiplication);
             };
 
-            button3.Click += (_, _) => {
-                AppendNumber(3);
+            buttonMinus.Click += (_, _) =>
+            {
+                SetOperation(Operation.Subtraction);
             };
 
-            button4.Click += (_, _) => {
-                AppendNumber(4);
+            buttonComma.Click += (_, _) =>
+            {
+                if (test.Text.Contains(','))
+                    return;
+
+                test.Text += ",";
             };
 
-            button5.Click += (_, _) => {
-                AppendNumber(5);
+            buttonPlus.Click += (_, _) =>
+            {
+                SetOperation(Operation.Addition);
             };
 
-            button6.Click += (_, _) => {
-                AppendNumber(6);
-            };
+            buttonExa.Click += (_, _) =>
+            {
+                if (_operation == Operation.None)
+                    return;
 
-            button7.Click += (_, _) => {
-                AppendNumber(7);
-            };
-
-            button8.Click += (_, _) => {
-                AppendNumber(8);
-            };
-
-            button9.Click += (_, _) => {
-                AppendNumber(9);
-            };
-
-            button0.Click += (_, _) => {
-                AppendNumber(0);
-            };
-
-            buttonPerc.Click += (_, _) => {
-                if (operation == "")
-                {
-                    currentValue = double.Parse(test.Text);
-                    currentValue /= 100;
-                    test.Text = currentValue.ToString();
-                }
-            };
-
-            buttonX.Click += (_, _) => {
-                SetOperation("*");
-            };
-
-            buttonMinus.Click += (_, _) => {
-                SetOperation("-");
-            };
-
-            buttonComma.Click += (_, _) => {
-                if (!test.Text.Contains(","))
-                {
-                    test.Text += ",";
-                }
-            };
-
-            buttonPlus.Click += (_, _) => {
-                SetOperation("+");
-            };
-
-            buttonExa.Click += (_, _) => {
-                if (operation != "")
-                {
-                    CalculateResult();
-                    previousValue = 0;
-                    currentValue = 0;
-                }
+                CalculateResult();
+                _previousValue = 0;
+                _currentValue = 0;
             };
         }
 
@@ -102,51 +99,40 @@ namespace TestApp_AvaloniaUI.Views
                 test.Text += number.ToString();
             }
 
-            currentValue = double.Parse(test.Text);
+            _currentValue = double.Parse(test.Text);
         }
 
-        private void SetOperation(string op)
+        private void SetOperation(Operation operation)
         {
-            if (previousValue == 0)
+            if (_previousValue == 0)
             {
-                previousValue = double.Parse(test.Text);
+                _previousValue = double.Parse(test.Text);
             }
             else
             {
-                if (operation != "")
-                {
-                    CalculateResult();
-                }
+                if (_operation == Operation.None)
+                   return;
+
+                CalculateResult();
             }
 
-            operation = op;
-            test.Text = "";
+            _operation = operation;
+            test.Text = string.Empty;
         }
 
         private void CalculateResult()
         {
-            switch (operation)
+            _previousValue = _operation switch
             {
-                case "+":
-                    previousValue += currentValue;
-                    test.Text = previousValue.ToString();
-                    break;
-                case "-":
-                    previousValue -= currentValue;
-                    test.Text = previousValue.ToString();
-                    break;
-                case "*":
-                    previousValue *= currentValue;
-                    test.Text = previousValue.ToString();
-                    break;
-                case "^":
-                    previousValue = Math.Pow(previousValue, currentValue);
-                    test.Text = previousValue.ToString();
-                    break;
-            }
+                Operation.Addition => _previousValue + _currentValue,
+                Operation.Subtraction => _previousValue - _currentValue,
+                Operation.Multiplication => _previousValue * _currentValue,
+                _ => throw new ArgumentException()
+            };
 
-            operation = "";
-            currentValue = 0;
+            test.Text = _previousValue.ToString();
+            _operation = Operation.None;
+            _currentValue = 0;
         }
     }
 }
