@@ -1,165 +1,155 @@
 using Avalonia.Controls;
 using Avalonia.Input;
+using Microsoft.CodeAnalysis;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text.RegularExpressions;
+using TestApp_AvaloniaUI.Features;
 
 namespace TestApp_AvaloniaUI.Views
 {
-    enum Operation
-    {
-        None,
-
-        Multiplication,
-
-        Addition,
-
-        Subtraction,
-
-        Division,
-
-        Comma,
-    }
-
-    static class RangeExtensions
-    {
-        public static IEnumerator<int> GetEnumerator(this Range range)
-        {
-            for (var i = range.Start.Value; i < range.End.Value; i++)
-                yield return i;
-        }
-    }
-
     public partial class MainWindow : Window
     {
+        private static readonly char[] _operationSymbols;
+
+        static MainWindow()
+        {
+            _operationSymbols = new char[] { '+', '-', '*', '/' };
+        }
+
         public MainWindow()
         {
             InitializeComponent();
+            
+            InitializeOperationButton();
 
+            buttonTransfer.Click += (_, _) =>
+            {
+                buttonTransfer.IsEnabled = false;
+                inputText.Text += resultText.Text;
+                resultText.Text = string.Empty;
+            };
+
+            buttonBack.Click += (_, _) =>
+            {
+                if (!string.IsNullOrEmpty(inputText.Text))
+                {
+                    inputText.Text = inputText.Text.Remove(inputText.Text.Length - 1);
+                }
+            };
+
+            buttonClear.Click += (_, _) =>
+            {
+                buttonTransfer.IsEnabled = false;
+                inputText.Text = string.Empty;
+                resultText.Text = string.Empty;
+            };
+
+            buttonComma.Click += (_, _) =>
+            {
+                string result = Calculator.Comma(e: inputText.Text, _operationSymbols);
+                inputText.Text += result;
+            };
+
+            buttonEquals.Click += (_, _) =>
+            {
+                if (string.IsNullOrWhiteSpace(inputText.Text) || IsInputEndingWithAnyOperation())
+                    return;
+
+                CalculateResult();
+            };
+        }
+
+        private void InitializeOperationButton()
+        {
             var buttonNamePrefix = "button";
-            foreach (var buttonIndex in 0..10)
+            foreach (var buttonIndex in 0..9)
             {
                 var button = this.Get<Button>($"{buttonNamePrefix}{buttonIndex}");
                 button.Click += (_, _) => AppendNumber(buttonIndex);
             }
 
-            buttonTransfer.Click += (_, _) =>
+            var operationButtons = new Dictionary<Button, Operation>
             {
-                buttonTransfer.IsEnabled = false;
-                inputText.Text = resultText.Text;
-                resultText.Text = null;
+                [buttonDivide] = Operation.Division,
+                [buttonMultiply] = Operation.Multiplication,
+                [buttonSubtract] = Operation.Subtraction,
+                [buttonAdd] = Operation.Addition,
             };
 
-            buttonDivide.Click += (_, _) =>
+            var parenthesisButtons = new Dictionary<Button, Operation>
             {
-                SetOperation(Operation.Division);
+                [buttonLeftParenthesis] = Operation.LeftParenthesis,
+                [buttonRightParenthesis] = Operation.RightParenthesis
             };
 
-            buttonMultiply.Click += (_, _) =>
+            foreach (var pair in operationButtons)
             {
-                SetOperation(Operation.Multiplication);
-            };
+                pair.Key.Click += (_, _) => SetOperation(pair.Value);
+            }
 
-            buttonSubtract.Click += (_, _) =>
+            foreach (var pair in parenthesisButtons)
             {
-                SetOperation(Operation.Subtraction);
-            };
+                pair.Key.Click += (_, _) => SetParenthesis(pair.Value);
+            }
+        }
 
-            buttonComma.Click += (_, _) =>
-            {
-                if (inputText.Text.Contains('.'))
-                    return;
-
-                SetOperation(Operation.Comma);
-            };
-
-            buttonAdd.Click += (_, _) =>
-            {
-                SetOperation(Operation.Addition);
-            };
-
-            buttonEquals.Click += (_, _) =>
-            {
-                if (string.IsNullOrEmpty(inputText.Text) || inputText.Text.EndsWith("+") || inputText.Text.EndsWith("-") || inputText.Text.EndsWith("*") || inputText.Text.EndsWith("/"))
-                    return;
-                CalculateResult();
-            };
+        private bool IsInputEndingWithAnyOperation()
+        {
+            return _operationSymbols.Any(predicate: x => inputText.Text.EndsWith(x));
         }
 
         private void AppendNumber(int number)
         {
-            if (inputText.Text == "0")
+            if (inputText.Text == "0") 
             {
                 inputText.Text = number.ToString();
+                return;
             }
-            else
-            {
-                inputText.Text += number.ToString();
-            }
+            inputText.Text += number.ToString();
         }
 
         private void SetOperation(Operation operation)
         {
-            if (string.IsNullOrEmpty(inputText.Text) || inputText.Text.EndsWith("+") || inputText.Text.EndsWith("-") || inputText.Text.EndsWith("*") || inputText.Text.EndsWith("/"))
-            {
+            if (string.IsNullOrWhiteSpace(inputText.Text) || IsInputEndingWithAnyOperation())
                 return;
-            }
 
-            switch (operation)
+            inputText.Text += operation switch
             {
-                case Operation.Addition:
-                    inputText.Text += "+";
-                    break;
-                case Operation.Subtraction:
-                    inputText.Text += "-";
-                    break;
-                case Operation.Multiplication:
-                    inputText.Text += "*";
-                    break;
-                case Operation.Division:
-                    inputText.Text += "/";
-                    break;
-                case Operation.Comma:
-                    if (!string.IsNullOrEmpty(inputText.Text) && !"+-*/".Contains(inputText.Text.Last()))
-                    {
-                        string[] parts = inputText.Text.Split(new char[] { '+', '-', '*', '/' }, StringSplitOptions.RemoveEmptyEntries);
-                        string lastPart = parts.Last();
-                        if (!lastPart.Contains(','))
-                        {
-                            // добавляем запятую к тексту
-                            inputText.Text += ",";
-                        }
-                    }
-                    break;
-                default:
-                    throw new ArgumentException();
-            }
+                Operation.Addition => "+",
+                Operation.Subtraction => "-",
+                Operation.Multiplication => "*",
+                Operation.Division => "/",
+               _ => throw new ArgumentException()
+            };
+        }
+
+        private void SetParenthesis(Operation operation)
+        {
+            // Check if the parenthesis is balanced
+            int rightCount = inputText.Text.Count(c => c == ')');
+
+            inputText.Text += operation switch
+            {
+                Operation.LeftParenthesis => "(", // Always add left parenthesis
+                Operation.RightParenthesis => rightCount >= inputText.Text.Length / 2 ? "" : ")", // Do not add right parenthesis if there are more than half of the input length
+                _ => throw new ArgumentException()
+            };
         }
 
         private void CalculateResult()
         {
             try
             {
-                string expression = inputText.Text;
-                expression = expression.Replace(',', '.');
-                DataTable table = new DataTable();
-                var result = table.Compute(expression, null);
-
-                inputText.Text = null;
+                var result = Calculator.Resultator(e: inputText.Text);
                 resultText.Text = result.ToString();
                 buttonTransfer.IsEnabled = true;
             }
-            catch
-            {
-                // Handle the exception here
-                // For example, you could display an error message to the user
-                inputText.Text = null;
-                resultText.Text = "Error:";
-                return;
-            }
-        }
+            catch { resultText.Text = "Error:"; };
 
+            inputText.Text = string.Empty;
+        }
     }
 }

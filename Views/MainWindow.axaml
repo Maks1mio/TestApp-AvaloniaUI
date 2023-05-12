@@ -11,8 +11,14 @@
     MinWidth="450"
     MinHeight="600"
     x:DataType="vm:MainWindowViewModel"
+    Background="#00000000"
     Icon="/Assets/avalonia-logo.ico"
     mc:Ignorable="d">
+
+
+    <Window.TransparencyBackgroundFallback>
+        <SolidColorBrush Color="Transparent" />
+    </Window.TransparencyBackgroundFallback>
 
     <Design.DataContext>
         <!--
@@ -24,7 +30,7 @@
 
     <Window.Styles>
         <Style Selector="Button.button">
-            <Setter Property="FontSize" Value="28" />
+            <Setter Property="FontSize" Value="20" />
             <Setter Property="FontWeight" Value="ExtraBold" />
             <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="VerticalAlignment" Value="Stretch" />
@@ -72,18 +78,20 @@
         <!--    -->
 
         <Style Selector="Button.take">
-            <Setter Property="FontSize" Value="18" />
+            <Setter Property="FontSize" Value="14" />
             <Setter Property="FontWeight" Value="ExtraBold" />
+            <Setter Property="Width" Value="80" />
             <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="VerticalAlignment" Value="Stretch" />
             <Setter Property="HorizontalContentAlignment" Value="Center" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
             <Setter Property="CornerRadius" Value="0, 9, 9, 0" />
-            <Setter Property="Transitions">
-                <Transitions>
-                    <DoubleTransition Property="FontSize" Duration="0:0:0.2" />
-                </Transitions>
-            </Setter>
+            <Setter Property="Transitions" />
+        </Style>
+
+        <Style Selector="Button.take[IsEnabled=False]">
+            <Setter Property="Width" Value="0" />
+            <Setter Property="Transitions" />
         </Style>
 
         <Style Selector="Button.take /template/ ContentPresenter">
@@ -93,19 +101,7 @@
             <Setter Property="Transitions">
                 <Transitions>
                     <BrushTransition Property="Background" Duration="0:0:0.4" />
-                    <BrushTransition Property="BorderBrush" Duration="0:0:0.2" />
-                </Transitions>
-            </Setter>
-        </Style>
-
-        <Style Selector="Button.take[IsEnabled=False] /template/ ContentPresenter">
-            <Setter Property="Foreground" Value="#50ffffff" />
-            <Setter Property="Width" Value="0" />
-            <Setter Property="Background" Value="#00000012" />
-            <Setter Property="BorderBrush" Value="#05000012" />
-            <Setter Property="Transitions">
-                <Transitions>
-                    <BrushTransition Property="Background" Duration="0:0:0.4" />
+                    <DoubleTransition Property="Width" Duration="0:0:0.4" />
                     <BrushTransition Property="BorderBrush" Duration="0:0:0.2" />
                 </Transitions>
             </Setter>
@@ -121,14 +117,21 @@
     <Grid
         Background="#f9020918"
         ColumnDefinitions="30,*,30"
-        RowDefinitions="30,100,*,30">
+        RowDefinitions="0,100,*,15,15">
+        <Border
+            Grid.Row="4"
+            Grid.Column="1"
+            Background="#10ffffff"
+            BorderBrush="#10ffffff"
+            BorderThickness="1"
+            CornerRadius="9, 9, 0, 0" />
         <Border
             Grid.Row="1"
             Grid.Column="1"
             Background="#10ffffff"
             BorderBrush="#10ffffff"
             BorderThickness="1"
-            CornerRadius="9" />
+            CornerRadius="0,0,9,9" />
         <Grid
             Grid.Row="1"
             Grid.Column="1"
@@ -141,7 +144,8 @@
                 VerticalAlignment="Center"
                 FontSize="22"
                 FontWeight="DemiBold"
-                Foreground="White" />
+                Foreground="White"
+                Text="" />
             <TextBlock
                 x:Name="resultText"
                 Grid.Column="1"
@@ -150,7 +154,8 @@
                 VerticalAlignment="Center"
                 FontSize="28"
                 FontWeight="DemiBold"
-                Foreground="White" />
+                Foreground="White"
+                Text="" />
             <Button
                 Name="buttonTransfer"
                 Grid.Column="2"
@@ -162,96 +167,120 @@
             Grid.Row="2"
             Grid.Column="1"
             ColumnDefinitions="*,*,*,*"
-            RowDefinitions="20,*,*,*,*">
+            RowDefinitions="20,60,*,*,*,*">
+            <Button
+                Name="buttonBack"
+                Grid.Row="1"
+                Grid.Column="0"
+                Classes="button"
+                Content="Back" />
+            <Button
+                Name="buttonClear"
+                Grid.Row="1"
+                Grid.Column="1"
+                Classes="button"
+                Content="Clear" />
+            <Button
+                Name="buttonLeftParenthesis"
+                Grid.Row="1"
+                Grid.Column="2"
+                Classes="button"
+                Content="(" />
+            <Button
+                Name="buttonRightParenthesis"
+                Grid.Row="1"
+                Grid.Column="3"
+                Classes="button"
+                Content=")" />
             <Button
                 Name="button1"
-                Grid.Row="1"
+                Grid.Row="2"
                 Classes="button"
                 Content="1" />
             <Button
                 Name="button2"
-                Grid.Row="1"
+                Grid.Row="2"
                 Grid.Column="1"
                 Classes="button"
                 Content="2" />
             <Button
                 Name="button3"
-                Grid.Row="1"
+                Grid.Row="2"
                 Grid.Column="2"
                 Classes="button"
                 Content="3" />
             <Button
                 Name="buttonDivide"
-                Grid.Row="1"
+                Grid.Row="2"
                 Grid.Column="3"
                 Classes="button"
                 Content="/" />
             <Button
                 Name="button4"
-                Grid.Row="2"
+                Grid.Row="3"
                 Classes="button"
                 Content="4" />
             <Button
                 Name="button5"
-                Grid.Row="2"
+                Grid.Row="3"
                 Grid.Column="1"
                 Classes="button"
                 Content="5" />
             <Button
                 Name="button6"
-                Grid.Row="2"
+                Grid.Row="3"
                 Grid.Column="2"
                 Classes="button"
                 Content="6" />
             <Button
                 Name="buttonMultiply"
-                Grid.Row="2"
+                Grid.Row="3"
                 Grid.Column="3"
                 Classes="button"
                 Content="x" />
             <Button
                 Name="button7"
-                Grid.Row="3"
+                Grid.Row="4"
                 Classes="button"
                 Content="7" />
             <Button
                 Name="button8"
-                Grid.Row="3"
+                Grid.Row="4"
                 Grid.Column="1"
                 Classes="button"
                 Content="8" />
             <Button
                 Name="button9"
-                Grid.Row="3"
+                Grid.Row="4"
                 Grid.Column="2"
                 Classes="button"
                 Content="9" />
             <Button
                 Name="buttonSubtract"
-                Grid.Row="3"
+                Grid.Row="4"
                 Grid.Column="3"
                 Classes="button"
                 Content="-" />
             <Button
                 Name="buttonComma"
-                Grid.Row="4"
+                Grid.Row="5"
                 Classes="button"
                 Content="," />
             <Button
                 Name="button0"
-                Grid.Row="4"
+                Grid.Row="5"
                 Grid.Column="1"
                 Classes="button"
                 Content="0" />
             <Button
                 Name="buttonEquals"
-                Grid.Row="4"
+                Grid.Row="5"
                 Grid.Column="2"
                 Classes="button"
                 Content="=" />
             <Button
                 Name="buttonAdd"
-                Grid.Row="4"
+                Grid.Row="5"
                 Grid.Column="3"
                 Classes="button"
                 Content="+" />
